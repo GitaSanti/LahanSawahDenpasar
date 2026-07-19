@@ -44,9 +44,9 @@
         <script src="js/leaflet-search.js"></script>
         <script src="data/Sawah_2.js"></script>
         <script src="data/BatasKecamatan_3.js"></script>
-        <script src="data/KantorPemerintah_4.js"></script>
-        <script src="data/Jalan_5.js"></script>
-        <script src="data/Sungai_6.js"></script>
+        <script src="data/Jalan_4.js"></script>
+        <script src="data/Sungai_5.js"></script>
+        <script src="data/KantorPemerintah_6.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -66,7 +66,7 @@
         }
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).fitBounds([[-8.76536533990224,115.06841405334765],[-8.587219866050951,115.44841131214068]]);
+        }).fitBounds([[-8.658503008527646,115.20415921694382],[-8.636208466693095,115.25680267451474]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -93,9 +93,20 @@
                 var src = imgTd.getAttribute('src');
                 if (/\.(jpg|jpeg|png|gif|bmp|webp|avif)$/i.test(src)) {
                     popup._contentNode.classList.add('media');
-                    setTimeout(function() {
-                        popup.update();
-                    }, 10);
+                    var img = popup._contentNode.querySelector('td img');
+                    if (img) {
+                        // If already loaded (cache), update immediately
+                        if (img.complete && img.naturalHeight > 0) {
+                            popup.update();
+                        } else {
+                            img.addEventListener('load', function() {
+                                popup.update();
+                            });
+                            img.addEventListener('error', function() {
+                                popup.update();
+                            });
+                        }
+                    }
                 } else if (/\.(mp3|wav|ogg|aac)$/i.test(src)) {
                     var audio = document.createElement('audio');
                     audio.controls = true;
@@ -444,159 +455,7 @@
         });
         bounds_group.addLayer(layer_BatasKecamatan_3);
         map.addLayer(layer_BatasKecamatan_3);
-        function pop_KantorPemerintah_4(feature, layer) {
-            layer.on({
-                mouseout: function(e) {
-                    for (var i in e.target._eventParents) {
-                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
-                            e.target._eventParents[i].resetStyle(e.target);
-                        }
-                    }
-                    if (typeof layer.closePopup == 'function') {
-                        layer.closePopup();
-                    } else {
-                        layer.eachLayer(function(feature){
-                            feature.closePopup()
-                        });
-                    }
-                },
-                mouseover: highlightFeature,
-            });
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(String(feature.properties['SRS_ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['FGSFNP'] !== null ? autolinker.link(String(feature.properties['FGSFNP']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
-            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
-			layer.on('popupopen', function(e) {
-				addClassToPopupIfMedia(content, e.popup);
-			});
-			layer.bindPopup(content, { maxHeight: 400 });
-        }
-
-        function style_KantorPemerintah_4_0(feature) {
-            switch(String(feature.properties['REMARK'])) {
-                case 'Kantor Camat':
-                    return {
-                pane: 'pane_KantorPemerintah_4',
-                radius: 4.0,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(227,26,28,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Kantor Gubernur':
-                    return {
-                pane: 'pane_KantorPemerintah_4',
-                radius: 4.0,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(51,160,44,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Kantor Walikota':
-                    return {
-                pane: 'pane_KantorPemerintah_4',
-                radius: 4.0,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(255,127,0,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Kantor Kepala Desa':
-                    return {
-                pane: 'pane_KantorPemerintah_4',
-                radius: 4.0,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(100,235,174,1.0)',
-                interactive: false,
-            }
-                    break;
-                case 'Kantor Polisi':
-                    return {
-                pane: 'pane_KantorPemerintah_4',
-                radius: 4.0,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(13,97,200,1.0)',
-                interactive: false,
-            }
-                    break;
-            }
-        }
-        map.createPane('pane_KantorPemerintah_4');
-        map.getPane('pane_KantorPemerintah_4').style.zIndex = 404;
-        map.getPane('pane_KantorPemerintah_4').style['mix-blend-mode'] = 'normal';
-        var layer_KantorPemerintah_4 = new L.geoJson(json_KantorPemerintah_4, {
-            attribution: '',
-            interactive: false,
-            dataVar: 'json_KantorPemerintah_4',
-            layerName: 'layer_KantorPemerintah_4',
-            pane: 'pane_KantorPemerintah_4',
-            onEachFeature: pop_KantorPemerintah_4,
-            pointToLayer: function (feature, latlng) {
-                var context = {
-                    feature: feature,
-                    variables: {}
-                };
-                return L.circleMarker(latlng, style_KantorPemerintah_4_0(feature));
-            },
-        });
-        bounds_group.addLayer(layer_KantorPemerintah_4);
-        map.addLayer(layer_KantorPemerintah_4);
-        function pop_Jalan_5(feature, layer) {
+        function pop_Jalan_4(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (var i in e.target._eventParents) {
@@ -722,9 +581,9 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_Jalan_5_0() {
+        function style_Jalan_4_0() {
             return {
-                pane: 'pane_Jalan_5',
+                pane: 'pane_Jalan_4',
                 opacity: 1,
                 color: 'rgba(227,26,28,1.0)',
                 dashArray: '',
@@ -735,21 +594,21 @@
                 interactive: false,
             }
         }
-        map.createPane('pane_Jalan_5');
-        map.getPane('pane_Jalan_5').style.zIndex = 405;
-        map.getPane('pane_Jalan_5').style['mix-blend-mode'] = 'normal';
-        var layer_Jalan_5 = new L.geoJson(json_Jalan_5, {
+        map.createPane('pane_Jalan_4');
+        map.getPane('pane_Jalan_4').style.zIndex = 404;
+        map.getPane('pane_Jalan_4').style['mix-blend-mode'] = 'normal';
+        var layer_Jalan_4 = new L.geoJson(json_Jalan_4, {
             attribution: '',
             interactive: false,
-            dataVar: 'json_Jalan_5',
-            layerName: 'layer_Jalan_5',
-            pane: 'pane_Jalan_5',
-            onEachFeature: pop_Jalan_5,
-            style: style_Jalan_5_0,
+            dataVar: 'json_Jalan_4',
+            layerName: 'layer_Jalan_4',
+            pane: 'pane_Jalan_4',
+            onEachFeature: pop_Jalan_4,
+            style: style_Jalan_4_0,
         });
-        bounds_group.addLayer(layer_Jalan_5);
-        map.addLayer(layer_Jalan_5);
-        function pop_Sungai_6(feature, layer) {
+        bounds_group.addLayer(layer_Jalan_4);
+        map.addLayer(layer_Jalan_4);
+        function pop_Sungai_5(feature, layer) {
             layer.on({
                 mouseout: function(e) {
                     for (var i in e.target._eventParents) {
@@ -833,9 +692,9 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_Sungai_6_0() {
+        function style_Sungai_5_0() {
             return {
-                pane: 'pane_Sungai_6',
+                pane: 'pane_Sungai_5',
                 opacity: 1,
                 color: 'rgba(31,120,180,1.0)',
                 dashArray: '',
@@ -846,20 +705,172 @@
                 interactive: false,
             }
         }
-        map.createPane('pane_Sungai_6');
-        map.getPane('pane_Sungai_6').style.zIndex = 406;
-        map.getPane('pane_Sungai_6').style['mix-blend-mode'] = 'normal';
-        var layer_Sungai_6 = new L.geoJson(json_Sungai_6, {
+        map.createPane('pane_Sungai_5');
+        map.getPane('pane_Sungai_5').style.zIndex = 405;
+        map.getPane('pane_Sungai_5').style['mix-blend-mode'] = 'normal';
+        var layer_Sungai_5 = new L.geoJson(json_Sungai_5, {
             attribution: '',
             interactive: false,
-            dataVar: 'json_Sungai_6',
-            layerName: 'layer_Sungai_6',
-            pane: 'pane_Sungai_6',
-            onEachFeature: pop_Sungai_6,
-            style: style_Sungai_6_0,
+            dataVar: 'json_Sungai_5',
+            layerName: 'layer_Sungai_5',
+            pane: 'pane_Sungai_5',
+            onEachFeature: pop_Sungai_5,
+            style: style_Sungai_5_0,
         });
-        bounds_group.addLayer(layer_Sungai_6);
-        map.addLayer(layer_Sungai_6);
+        bounds_group.addLayer(layer_Sungai_5);
+        map.addLayer(layer_Sungai_5);
+        function pop_KantorPemerintah_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(String(feature.properties['SRS_ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FGSFNP'] !== null ? autolinker.link(String(feature.properties['FGSFNP']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_KantorPemerintah_6_0(feature) {
+            switch(String(feature.properties['REMARK'])) {
+                case 'Kantor Camat':
+                    return {
+                pane: 'pane_KantorPemerintah_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,26,28,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Kantor Gubernur':
+                    return {
+                pane: 'pane_KantorPemerintah_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Kantor Walikota':
+                    return {
+                pane: 'pane_KantorPemerintah_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,127,0,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Kantor Kepala Desa':
+                    return {
+                pane: 'pane_KantorPemerintah_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(100,235,174,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'Kantor Polisi':
+                    return {
+                pane: 'pane_KantorPemerintah_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(13,97,200,1.0)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_KantorPemerintah_6');
+        map.getPane('pane_KantorPemerintah_6').style.zIndex = 406;
+        map.getPane('pane_KantorPemerintah_6').style['mix-blend-mode'] = 'normal';
+        var layer_KantorPemerintah_6 = new L.geoJson(json_KantorPemerintah_6, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_KantorPemerintah_6',
+            layerName: 'layer_KantorPemerintah_6',
+            pane: 'pane_KantorPemerintah_6',
+            onEachFeature: pop_KantorPemerintah_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_KantorPemerintah_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_KantorPemerintah_6);
+        map.addLayer(layer_KantorPemerintah_6);
         const url = {"Nominatim OSM": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
         "France BAN": "https://api-adresse.data.gouv.fr/search/?"}
         var photonControl = L.control.photon({
@@ -914,9 +925,9 @@
             }
         });
         var overlaysTree = [
-            {label: '<img src="legend/Sungai_6.png" /> Sungai', layer: layer_Sungai_6},
-            {label: '<img src="legend/Jalan_5.png" /> Jalan', layer: layer_Jalan_5},
-            {label: 'Kantor Pemerintah<br /><table><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_4_KantorCamat0.png" /></td><td>Kantor Camat</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_4_KantorGubernur1.png" /></td><td>Kantor Gubernur</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_4_KantorWalikota2.png" /></td><td>Kantor Walikota</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_4_KantorKepalaDesa3.png" /></td><td>Kantor Kepala Desa</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_4_KantorPolisi4.png" /></td><td>Kantor Polisi</td></tr></table>', layer: layer_KantorPemerintah_4},
+            {label: 'Kantor Pemerintah<br /><table><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_6_KantorCamat0.png" /></td><td>Kantor Camat</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_6_KantorGubernur1.png" /></td><td>Kantor Gubernur</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_6_KantorWalikota2.png" /></td><td>Kantor Walikota</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_6_KantorKepalaDesa3.png" /></td><td>Kantor Kepala Desa</td></tr><tr><td style="text-align: center;"><img src="legend/KantorPemerintah_6_KantorPolisi4.png" /></td><td>Kantor Polisi</td></tr></table>', layer: layer_KantorPemerintah_6},
+            {label: '<img src="legend/Sungai_5.png" /> Sungai', layer: layer_Sungai_5},
+            {label: '<img src="legend/Jalan_4.png" /> Jalan', layer: layer_Jalan_4},
             {label: '<img src="legend/BatasKecamatan_3.png" /> Batas Kecamatan', layer: layer_BatasKecamatan_3},
             {label: '<img src="legend/Sawah_2.png" /> Sawah', layer: layer_Sawah_2},
             {label: "Esri Imagery", layer: layer_EsriImagery_1, radioGroup: 'bm' },
